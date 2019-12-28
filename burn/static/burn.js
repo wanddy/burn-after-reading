@@ -65,17 +65,46 @@ module.controller("CreateCtl", [
     };
 
     $scope.copy = function() {
-      document.getElementById("theurlbox").select();
+		el = document.getElementById("theurlbox");
+
+    // handle iOS as a special case
+    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+
+        // save current contentEditable/readOnly status
+        var editable = el.contentEditable;
+        var readOnly = el.readOnly;
+
+        // convert to editable with readonly to stop iOS keyboard opening
+        el.contentEditable = true;
+        el.readOnly = true;
+
+        // create a selectable range
+        var range = document.createRange();
+        range.selectNodeContents(el);
+
+        // select the range
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.setSelectionRange(0, 999999);
+
+        // restore contentEditable/readOnly to original state
+        el.contentEditable = editable;
+        el.readOnly = readOnly;
+    }
+    else {
+        el.select();
+    }
+      //document.getElementById("theurlbox").select();
       if (document.execCommand("copy")) {
         feedback("info", "The message has been copied to your clipboard.");
-      } else {
+      } else{
         feedback(
           "error",
           "Could not copy the message to your keyboard, your browser may not support this feature."
         );
       }
     };
-
     $scope.check_filesize = (input) => {
       var files = input.files;
       var s = $scope.message.length;
@@ -177,6 +206,36 @@ module.controller("OpenCtl", [
     };
 
     $scope.copy = () => {
+		el = document.getElementById("thebox");
+
+    // handle iOS as a special case
+    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+
+        // save current contentEditable/readOnly status
+        var editable = el.contentEditable;
+        var readOnly = el.readOnly;
+
+        // convert to editable with readonly to stop iOS keyboard opening
+        el.contentEditable = true;
+        el.readOnly = true;
+
+        // create a selectable range
+        var range = document.createRange();
+        range.selectNodeContents(el);
+
+        // select the range
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.setSelectionRange(0, 999999);
+
+        // restore contentEditable/readOnly to original state
+        el.contentEditable = editable;
+        el.readOnly = readOnly;
+    }
+    else {
+        el.select();
+    }
       if (document.execCommand("copy")) {
         feedback("info", "The message has been copied to your clipboard.");
       } else {
@@ -218,4 +277,3 @@ module.controller("OpenCtl", [
     );
   }
 ]);
-
